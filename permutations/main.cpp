@@ -1,43 +1,69 @@
 #include <iostream>
 #include <stdexcept>
 
-int factorial(int number)
-{
-  int output {number};
+int factorial(int number) {
+  if (number < 0)
+    throw std::runtime_error("Factorial error");
 
-  for(int i = (number-1); i>0; --i) {
-    output = output*i;
+  int output{number};
+
+  for (int i = (number - 1); i > 0; --i) {
+    output = output * i;
   }
 
   return output;
 }
 
-int numPermutations(int objects, int sample)
-{
+int numPermutations(int objects, int sample) {
   // Guard Statements
-  if(!(sample >= 0) || !(objects >= sample)) {
+  if (!(sample >= 0) || !(objects >= sample)) {
     throw std::runtime_error("Please enter n >= r >= 0");
   }
 
-  //Compute Permutations & return
-  return (factorial(objects))/(factorial(objects-sample));
+  // Compute Permutations & return
+  return (factorial(objects)) / (factorial(objects - sample));
 }
 
-int numCombinations(int objects, int sample)
-{
-  if(!(sample >= 0) || !(objects >= sample)) {
+int numCombinations(int objects, int sample) {
+  // Guard Statements
+  if (!(sample >= 0) || !(objects >= sample)) {
     throw std::runtime_error("Please enter n >= r >= 0");
   }
 
-  return (numPermutations(objects, sample))/(factorial(sample));
+  // Compute Combinations & return
+  return (numPermutations(objects, sample)) / (factorial(sample));
 }
 
-int main()
-{
-  try {
-    std::cout << "Permutations: " << numPermutations(3, 2) << '\n';
-    std::cout << "Combinations: " << numCombinations(3, 2) << '\n';
-  } catch (std::runtime_error& e) {
-    std::cerr << e.what() << '\n';
+int main() {
+  while (true) {
+
+    std::cout << "Enter two numbers (seperated by whitespace)\n";
+    int a, b;
+    if (!(std::cin >> a >> b))
+      throw std::runtime_error("Invalid Input: Not two integers");
+
+    std::cout << "Enter 'p' to compute Permutations\nEnter 'c' to compute "
+                 "Combinations\nEnter 'b' to compute both\n\n";
+    bool perm = false;
+    bool comb = false;
+
+    // Bad way to test for input lol
+    std::string test;
+    std::cin >> test;
+
+    if (test == "p")
+      perm = true;
+    else if (test == "c")
+      comb = true;
+    else if (test == "b") {
+      perm = true;
+      comb = true;
+    } else
+      throw std::runtime_error("Invalid Input: Bad Choice Selection");
+
+    if (perm)
+      std::cout << "Permutations: " << numPermutations(a, b) << '\n';
+    if (comb)
+      std::cout << "Combinations: " << numCombinations(a, b) << '\n';
   }
 }
